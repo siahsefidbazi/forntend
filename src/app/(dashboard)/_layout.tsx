@@ -1,11 +1,15 @@
 
-import { Tabs } from 'expo-router';
+import { Redirect, Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '@/constants/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useAuth } from '@/features/auth/AuthProvider';
 
 export default function TabsLayout() {
   const insets = useSafeAreaInsets();
+  const { status } = useAuth();
+  if (status === 'loading') return null;
+  if (status === 'anonymous') return <Redirect href="/(auth)/login" />;
   return (
     <Tabs
       screenOptions={{

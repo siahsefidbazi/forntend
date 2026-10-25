@@ -1,108 +1,45 @@
-// [REAL-API] import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 
-/**
- * Secure persistence for the session.
- *
- * The `token` key is the one already used by the application entry point, so
- * the existing login/OTP flow keeps working with the same storage contract.
- *
- * [MOCK] While the backend is not ready the session is kept in memory and the
- * app starts in the signed-in state — see `MOCKS.md`.
- */
 const TOKEN_KEY = 'token';
 const PHONE_KEY = 'phone';
 
-/** [MOCK] In-memory session used while the real storage is disabled. */
-const MOCK_TOKEN = 'mock-access-token';
-const MOCK_PHONE = '09121234567';
-
-let mockToken: string | null = MOCK_TOKEN;
-let mockPhone: string | null = MOCK_PHONE;
-
 function webStorage(): Storage | null {
-  if (Platform.OS !== 'web' || typeof window === 'undefined') {
-    return null;
-  }
-
+  if (Platform.OS !== 'web' || typeof window === 'undefined') return null;
   return window.localStorage;
 }
 
-export async function readToken(): Promise<string | null> {
-  /* [REAL-API]
-  const storage = webStorage();
-  if (storage) {
-    return storage.getItem(TOKEN_KEY);
-  }
-
+async function read(key: string): Promise<string | null> {
   try {
-    return await SecureStore.getItemAsync(TOKEN_KEY);
-  } catch {
-    return null;
-  }
-  */
-  return mockToken; // [MOCK]
+    if (Platform.OS === 'web') return webStorage()?.getItem(key) ?? null;
+    return await SecureStore.getItemAsync(key);
+  } catch { return null; }
 }
 
-export async function writeToken(token: string): Promise<void> {
-  /* [REAL-API]
-  const storage = webStorage();
-  if (storage) {
-    storage.setItem(TOKEN_KEY, token);
-    return;
+async function write(key: string, value: string): Promise<void> {
+  if (Platform.OS === 'web') {
+    const storage = webStorage();
+    if (!storage) throw new Error('ذخیره‌ی نشست در مرورگر در دسترس نیست.');
+    storage.setItem(key, value);
+  } else {
+    await SecureStore.setItemAsync(key, value);
   }
-
-  await SecureStore.setItemAsync(TOKEN_KEY, token);
-  */
-  mockToken = token; // [MOCK]
 }
+
+export async function readToken(): Promise<string | null> {
+  const token = await read(TOKEN_KEY);
+  return token === 'mock-access-token' ? null : token;
+}
+export function writeToken(token: string): Promise<void> { return write(TOKEN_KEY, token); }
+export function readPhone(): Promise<string | null> { return read(PHONE_KEY); }
+export function writePhone(phone: string): Promise<void> { return write(PHONE_KEY, phone); }
 
 export async function clearToken(): Promise<void> {
-  /* [REAL-API]
-  const storage = webStorage();
-  if (storage) {
-    storage.removeItem(TOKEN_KEY);
-    return;
+  if (Platform.OS === 'web') {
+    const storage = webStorage();
+    storage?.removeItem(TOKEN_KEY);
+    storage?.removeItem(PHONE_KEY);
+  } else {
+    await Promise.all([SecureStore.deleteItemAsync(TOKEN_KEY), SecureStore.deleteItemAsync(PHONE_KEY)]);
   }
-
-  try {
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
-  } catch {
-    // Nothing to remove.
-  }
-  */
-  mockToken = null; // [MOCK]
-}
-
-export async function readPhone(): Promise<string | null> {
-  /* [REAL-API]
-  const storage = webStorage();
-  if (storage) {
-    return storage.getItem(PHONE_KEY);
-  }
-
-  try {
-    return await SecureStore.getItemAsync(PHONE_KEY);
-  } catch {
-    return null;
-  }
-  */
-  return mockPhone; // [MOCK]
-}
-
-export async function writePhone(phone: string): Promise<void> {
-  /* [REAL-API]
-  const storage = webStorage();
-  if (storage) {
-    storage.setItem(PHONE_KEY, phone);
-    return;
-  }
-
-  try {
-    await SecureStore.setItemAsync(PHONE_KEY, phone);
-  } catch {
-    // The phone number is a convenience only.
-  }
-  */
-  mockPhone = phone; // [MOCK]
 }

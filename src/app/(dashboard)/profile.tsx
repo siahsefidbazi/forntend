@@ -10,6 +10,7 @@ import { useAuth } from '@/features/auth/AuthProvider';
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
 const SETTINGS: { id: string; title: string; subtitle: string; icon: IconName; route: string }[] = [
+  { id: 'profile-details', title: 'مشخصات فردی', subtitle: 'مشاهده و ویرایش پروفایل', icon: 'person-circle-outline', route: '/profile-details' },
   { id: 'schedule', title: 'برنامه‌های رفت‌وآمد', subtitle: 'روزها و ساعت‌های مسیر', icon: 'calendar-outline', route: '/schedule' },
   { id: 'detour', title: 'محدودیت مسیر', subtitle: 'پیاده‌روی و زمان اضافه', icon: 'walk-outline', route: '/settings/detour' },
   { id: 'deliveries', title: 'تحویل‌های من', subtitle: 'وضعیت سفارش‌های تخصیص‌یافته', icon: 'cube-outline', route: '/deliveries' },
@@ -47,7 +48,7 @@ export default function Profile() {
         </View>
         <View style={styles.status}>
           <Ionicons name="shield-checkmark-outline" size={16} color={RideColors.warning} />
-          <Text style={styles.statusText}>احراز واقعی فعال نیست</Text>
+          <Text style={styles.statusText}>ورود با کد تأیید</Text>
         </View>
       </View>
 

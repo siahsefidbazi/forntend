@@ -1,9 +1,8 @@
 /**
  * Configuration of the mock layer.
  *
- * The whole app currently runs against the data in `src/mocks/data.ts`. The
- * real backend implementation is kept (commented out) next to every mock so
- * that it can be restored later — see `MOCKS.md`.
+ * Only APIs absent from swagger_final.pdf use this layer: parcel orders,
+ * deliveries, matching, detour preferences and support.
  */
 
 export const MOCK_DELAY_MS = 400;

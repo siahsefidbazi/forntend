@@ -148,9 +148,10 @@ export async function acceptMatch(
   }
 
   if (acceptance.mode === 'weekly_schedule') {
-    const plan = travelPlans.find((item) => item.id === acceptance.travelPlanId && item.isActive);
-    if (!plan?.legs.some((leg) => leg.sequence === acceptance.legSequence)) {
-      throw new ApiError('برنامه یا قطعه‌ی انتخاب‌شده فعال نیست.', 'validation', 400);
+    // Real travel plans are no longer held in the mock store. Acceptance itself
+    // stays a simulation until a matching endpoint is documented.
+    if (!acceptance.travelPlanId.trim() || !Number.isInteger(acceptance.legSequence) || acceptance.legSequence < 1) {
+      throw new ApiError('برنامه یا قطعه‌ی انتخاب‌شده معتبر نیست.', 'validation', 400);
     }
   } else if (
     !acceptance.origin.title.trim() ||

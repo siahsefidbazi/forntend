@@ -30,6 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [phone, setPhone] = useState<string | null>(null);
 
   const signIn = useCallback(async (token: string, nextPhone: string) => {
+    if (!token?.trim()) throw new Error('توکن معتبر از سرور دریافت نشد.');
     await writeToken(token);
     await writePhone(nextPhone);
     setAccessToken(token);
@@ -38,10 +39,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signOut = useCallback(async () => {
-    await clearToken();
     setAccessToken(null);
     setPhone(null);
     setStatus('anonymous');
+    await clearToken();
   }, []);
 
   useEffect(() => {
@@ -72,10 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // A 401 from any endpoint means the session is gone for good: the backend
+    // A 401 from an authenticated request means the session expired: the backend
     // exposes no refresh token, so the user has to sign in again.
     setUnauthorizedHandler(() => {
-      void signOut();
+      void signOut().catch(() => { /* Memory session is already cleared. */ });
     });
 
     return () => setUnauthorizedHandler(null);

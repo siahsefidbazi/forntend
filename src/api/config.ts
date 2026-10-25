@@ -11,6 +11,5 @@ export const API_BASE_URL = (
   process.env.EXPO_PUBLIC_API_BASE_URL ?? DEFAULT_API_BASE_URL
 ).replace(/\/+$/, '');
 
-export const API_TIMEOUT_MS = Number(
-  process.env.EXPO_PUBLIC_API_TIMEOUT_MS ?? 20000,
-);
+const configuredTimeout = Number(process.env.EXPO_PUBLIC_API_TIMEOUT_MS ?? 20000);
+export const API_TIMEOUT_MS = Number.isFinite(configuredTimeout) && configuredTimeout > 0 ? configuredTimeout : 20000;

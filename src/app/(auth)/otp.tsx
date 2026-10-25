@@ -20,7 +20,7 @@ import { useAuth } from '@/features/auth/AuthProvider';
 import { toEnglishDigits, toFaDigits } from '@/utils/format';
 
 const theme = Colors.light;
-const OTP_LENGTH = 5;
+const OTP_LENGTH = 6;
 const RESEND_SECONDS = 60;
 
 export default function Otp() {
@@ -36,6 +36,7 @@ export default function Otp() {
     Array.isArray(params.code) ? params.code[0] : params.code ?? '';
 
   const [code, setCode] = useState('');
+  const [latestDevelopmentCode, setLatestDevelopmentCode] = useState(developmentCode);
   const [seconds, setSeconds] = useState(RESEND_SECONDS);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -93,7 +94,8 @@ export default function Otp() {
     inputRef.current?.focus();
 
     try {
-      await requestVerificationCode({ phoneNumber: phone });
+      const response = await requestVerificationCode({ phoneNumber: phone });
+      setLatestDevelopmentCode(response.developmentCode ?? '');
     } catch (caught) {
       setError(describeError(caught));
     }
@@ -152,16 +154,16 @@ export default function Otp() {
             autoFocus
             textContentType="oneTimeCode"
             autoComplete="sms-otp"
-            accessibilityLabel="کد تایید پنج رقمی"
+            accessibilityLabel="کد تایید شش رقمی"
             style={styles.hiddenInput}
             caretHidden
           />
 
           {!!error && <Text style={styles.error}>{error}</Text>}
 
-          {!!developmentCode && !code && (
+          {!!latestDevelopmentCode && !code && (
             <Text style={styles.devCode}>
-              کد توسعه سرویس: {toFaDigits(developmentCode)}
+              کد توسعه سرویس: {toFaDigits(latestDevelopmentCode)}
             </Text>
           )}
 

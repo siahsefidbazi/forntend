@@ -2,7 +2,8 @@
  * Request/response contracts extracted from the Swagger document
  * ("HamMasir v1", https://localhost:7220/swagger/index.html).
  *
- * Every type in this file maps to a documented schema or request body.
+ * Auth, users, profiles and travel plans follow swagger_final.pdf.
+ * Parcel, matching, detour and support types below are mock-only contracts.
  */
 
 /** RFC 7807 `application/problem+json` payload returned by the backend. */
