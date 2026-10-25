@@ -1,0 +1,5 @@
+const pages=await (await fetch('http://localhost:9226/json')).json();
+const ws=new WebSocket(pages.find(p=>p.url.includes('8084')).webSocketDebuggerUrl);
+await new Promise(r=>ws.addEventListener('open',r,{once:true}));
+ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(m.id){console.log(JSON.stringify(m.result));ws.close();}});
+ws.send(JSON.stringify({id:1,method:'Runtime.evaluate',params:{expression:`(async()=>({body:document.body.innerText,images:[...document.querySelectorAll('.leaflet-tile')].slice(0,3).map(x=>({src:x.src,complete:x.complete,width:x.naturalWidth})),network:await Promise.all(['https://tile.openstreetmap.org/12/2633/1611.png','https://basemaps.cartocdn.com/rastertiles/voyager/12/2633/1611.png','https://nominatim.openstreetmap.org/reverse?lat=35.7219&lon=51.3347&format=jsonv2&accept-language=fa'].map(async url=>{try{const r=await fetch(url,{signal:AbortSignal.timeout(8000)});return {url,status:r.status,body:r.headers.get('content-type')?.includes('json')?(await r.text()).slice(0,400):null}}catch(e){return {url,error:e.message}}}))}))()`,returnByValue:true,awaitPromise:true}}));

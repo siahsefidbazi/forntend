@@ -1,0 +1,56 @@
+{
+  "expo": {
+    "name": "hammasir",
+    "slug": "hammasir",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/hammasir-logo.png",
+    "scheme": "hammasir",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "icon": "./assets/images/hammasir-logo.png",
+      "bundleIdentifier": "com.hammasir.ride",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.hammasir.ride",
+      "icon": "./assets/images/hammasir-logo.png",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "output": "static",
+      "favicon": "./assets/images/hammasir-logo.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#22C55E",
+          "image": "./assets/images/hammasir-logo.png",
+          "imageWidth": 180
+        }
+      ],
+      "expo-secure-store",
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "برای نمایش موقعیت شما روی نقشه، دسترسی مکان لازم است.",
+          "isAndroidBackgroundServiceEnabled": false,
+          "isIosBackgroundLocationEnabled": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a22eb0d2-f132-4f0f-8dde-95b5340d665e"
+      }
+    }
+  }
+}
